@@ -3,13 +3,15 @@ import 'package:moviedb/provider/search/search_provider.dart';
 import 'package:moviedb/style/color.dart';
 import 'package:provider/provider.dart';
 
+import '../../provider/detail/detail_provider.dart';
 import '../../utils/constant.dart';
+import '../detail/detail_page.dart';
 import '../home_page.dart';
 
 class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final detailProvider = Provider.of<DetailProvider>(context, listen: false);
+    final detailProvider = Provider.of<DetailProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -43,19 +45,19 @@ class SearchPage extends StatelessWidget {
                   var linkImage = Constant.imageUrl;
                   return GestureDetector(
                     onTap: () {
-                      // detailProvider.onInit(provider.listSearch[index].id!);
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => DetailPage(
-                      //       imagePath: provider
-                      //                   .listSearch[index].backdropPath ==
-                      //               null
-                      //           ? 'no-image'
-                      //           : '$linkImage${provider.listSearch[index].backdropPath}',
-                      //     ),
-                      //   ),
-                      // );
+                      detailProvider.onInit(provider.listSearch[index].id!);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailPage(
+                            imagePath: provider
+                                        .listSearch[index].backdropPath ==
+                                    null
+                                ? 'no-image'
+                                : '$linkImage${provider.listSearch[index].backdropPath}',
+                          ),
+                        ),
+                      );
                     },
                     child: Container(
                       margin: const EdgeInsets.all(3),
