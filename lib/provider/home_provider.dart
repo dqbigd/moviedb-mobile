@@ -7,7 +7,6 @@ class HomeProvider extends ChangeNotifier {
   ApiNetwork apiNetwork = ApiNetwork();
 
   var isLoading = false;
-  var category = '';
 
   var listNowPlaying = <Movie>[];
   var respNowPlaying = MovieResponse();
@@ -20,7 +19,7 @@ class HomeProvider extends ChangeNotifier {
     getNowPlayingData();
   }
 
-  getNowPlayingData({int? page}) async {
+  getNowPlayingData() async {
     isLoading = true;
     notifyListeners();
     try {

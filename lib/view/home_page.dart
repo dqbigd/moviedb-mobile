@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:moviedb/provider/movie_provider.dart';
+import 'package:moviedb/provider/home_provider.dart';
 import 'package:moviedb/utils/constant.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../provider/detail/detail_provider.dart';
 import '../style/color.dart';
 import 'detail/detail_page.dart';
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    final detailProvider = Provider.of<DetailProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -95,18 +99,17 @@ class HomePage extends StatelessWidget {
                           var linkImage = Constant.imageUrl;
                           return GestureDetector(
                             onTap: () {
+                              detailProvider
+                                  .onInit(provider.listNowPlaying[index].id!);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DetailPage(
-                                    title: 'Product Title',
-                                    description: 'Product Description',
                                     imagePath:
-                                        'assets/images/product_image.jpg',
+                                        '$linkImage${provider.listNowPlaying[index].backdropPath}',
                                   ),
                                 ),
                               );
-                              debugPrint('index : ' + index.toString());
                             },
                             child: Container(
                               margin: const EdgeInsets.all(3),
