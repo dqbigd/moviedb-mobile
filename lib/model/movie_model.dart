@@ -6,70 +6,72 @@ MovieResponse movieResponseFromJson(String str) =>
 String movieResponseToJson(MovieResponse data) => json.encode(data.toJson());
 
 class MovieResponse {
-  int page;
-  List<Result> results;
-  int totalPages;
-  int totalResults;
+  int? page;
+  List<Movie>? results;
+  int? totalPages;
+  int? totalResults;
 
   MovieResponse({
-    required this.page,
-    required this.results,
-    required this.totalPages,
-    required this.totalResults,
+    this.page,
+    this.results,
+    this.totalPages,
+    this.totalResults,
   });
 
   factory MovieResponse.fromJson(Map<String, dynamic> json) => MovieResponse(
         page: json["page"],
         results:
-            List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
+            List<Movie>.from(json["results"].map((x) => Movie.fromJson(x))),
         totalPages: json["total_pages"],
         totalResults: json["total_results"],
       );
 
   Map<String, dynamic> toJson() => {
         "page": page,
-        "results": List<dynamic>.from(results.map((x) => x.toJson())),
+        "results": results == null
+            ? null
+            : List<dynamic>.from(results!.map((x) => x.toJson())),
         "total_pages": totalPages,
         "total_results": totalResults,
       };
 }
 
-class Result {
-  bool adult;
+class Movie {
+  bool? adult;
   String? backdropPath;
-  List<int> genreIds;
-  int id;
-  String mediaType;
-  String title;
-  String originalLanguage;
-  String originalTitle;
-  String overview;
-  double popularity;
-  String posterPath;
-  DateTime releaseDate;
-  bool video;
-  double voteAverage;
-  int voteCount;
+  List<int>? genreIds;
+  int? id;
+  String? mediaType;
+  String? title;
+  String? originalLanguage;
+  String? originalTitle;
+  String? overview;
+  double? popularity;
+  String? posterPath;
+  DateTime? releaseDate;
+  bool? video;
+  double? voteAverage;
+  int? voteCount;
 
-  Result({
-    required this.adult,
+  Movie({
+    this.adult,
     this.backdropPath,
-    required this.genreIds,
-    required this.id,
-    required this.mediaType,
-    required this.title,
-    required this.originalLanguage,
-    required this.originalTitle,
-    required this.overview,
-    required this.popularity,
-    required this.posterPath,
-    required this.releaseDate,
-    required this.video,
-    required this.voteAverage,
-    required this.voteCount,
+    this.genreIds,
+    this.id,
+    this.mediaType,
+    this.title,
+    this.originalLanguage,
+    this.originalTitle,
+    this.overview,
+    this.popularity,
+    this.posterPath,
+    this.releaseDate,
+    this.video,
+    this.voteAverage,
+    this.voteCount,
   });
 
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
+  factory Movie.fromJson(Map<String, dynamic> json) => Movie(
         adult: json["adult"],
         backdropPath: json["backdrop_path"],
         genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
@@ -90,7 +92,9 @@ class Result {
   Map<String, dynamic> toJson() => {
         "adult": adult,
         "backdrop_path": backdropPath,
-        "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
+        "genre_ids": genreIds == null
+            ? null
+            : List<dynamic>.from(genreIds!.map((x) => x)),
         "id": id,
         "media_type": mediaType,
         "title": title,
@@ -99,8 +103,7 @@ class Result {
         "overview": overview,
         "popularity": popularity,
         "poster_path": posterPath,
-        "release_date":
-            "${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}",
+        "release_date": releaseDate?.toIso8601String(),
         "video": video,
         "vote_average": voteAverage,
         "vote_count": voteCount,

@@ -1,15 +1,21 @@
+import '../model/movie_model.dart';
+import '../utils/constant.dart';
+import 'base_client.dart';
+
 class ApiNetwork {
-  // device info
-  // Future<DeviceInfoResponse?> deviceInfo() async {
-  //   var apiUrl = '/device-info';
-  //
-  //   var response = await BaseClient().get(apiUrl);
-  //   if (response != null) {
-  //     return deviceInfoResponseFromJson(response);
-  //   } else {
-  //     return null;
-  //   }
-  // }
+  final String apiKey = Constant.token;
+
+  // now playing
+  Future<MovieResponse?> nowPlaying({int page = 1}) async {
+    var apiUrl = '/movie/now_playing?api_key=$apiKey&page=$page';
+
+    var response = await BaseClient().get(apiUrl);
+    if (response != null) {
+      return movieResponseFromJson(response);
+    } else {
+      return null;
+    }
+  }
 
   // report progress ticket (admin)
   // Future<ReportProgressTicketResponse?> reportProgressTicket(
