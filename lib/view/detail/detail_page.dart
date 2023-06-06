@@ -21,17 +21,20 @@ class DetailPage extends StatelessWidget {
                     bottomRight: Radius.circular(16)),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height / 2,
-                  child: Image.network(
-                    imagePath,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                  ),
+                  child: imagePath == 'no-image'
+                      ? Image.asset('assets/images/no-image.jpg')
+                      : Image.network(
+                          imagePath,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          },
+                        ),
                 ),
               ),
               Consumer<DetailProvider>(builder: (context, provider, _) {

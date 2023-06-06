@@ -126,8 +126,12 @@ class HomePage extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DetailPage(
-                                          imagePath:
-                                              '$linkImage${provider.listNowPlaying[index].backdropPath}',
+                                          imagePath: provider
+                                                      .listNowPlaying[index]
+                                                      .backdropPath ==
+                                                  null
+                                              ? 'no-image'
+                                              : '$linkImage${provider.listNowPlaying[index].backdropPath}',
                                         ),
                                       ),
                                     );
