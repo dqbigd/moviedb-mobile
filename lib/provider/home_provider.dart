@@ -15,6 +15,8 @@ class HomeProvider extends ChangeNotifier {
   var listNowPlaying = <Movie>[];
   var respNowPlaying = MovieResponse();
 
+  final TextEditingController searchController = TextEditingController();
+
   ScrollController scrollController = ScrollController();
   int _currentPage = 0;
 

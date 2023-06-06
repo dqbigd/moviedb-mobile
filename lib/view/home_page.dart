@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:moviedb/provider/home_provider.dart';
 import 'package:moviedb/utils/constant.dart';
+import 'package:moviedb/view/search/search_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../provider/detail/detail_provider.dart';
+import '../provider/search/search_provider.dart';
 import '../style/color.dart';
 import 'detail/detail_page.dart';
 
@@ -15,6 +17,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     final detailProvider = Provider.of<DetailProvider>(context, listen: false);
+    final searchProvider = Provider.of<SearchProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -22,20 +25,22 @@ class HomePage extends StatelessWidget {
           child: Card(
             margin: const EdgeInsets.only(top: 8),
             child: TextFormField(
-              enabled: false,
+              controller: homeProvider.searchController,
               textInputAction: TextInputAction.search,
-              onFieldSubmitted: (keyword) {
-                // productController.getProductData(1, keyword, "");
-              },
-              onTap: () {},
-              // controller: keywordController,
               cursorColor: Colors.black,
               decoration: InputDecoration(
-                  prefixIcon: GestureDetector(
+                  suffixIcon: GestureDetector(
                     onTap: () {
-                      // print(keywordController.text);
-                      // productController.getProductData(
-                      //     1, keywordController.text, "");
+                      var query = homeProvider.searchController.text;
+
+                      if (query != '') {
+                        searchProvider.onInit(query);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SearchPage()),
+                        );
+                      }
                     },
                     child: const Icon(
                       Icons.search,

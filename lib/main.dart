@@ -4,6 +4,7 @@ import 'package:moviedb/provider/home_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'provider/detail/detail_provider.dart';
+import 'provider/search/search_provider.dart';
 import 'view/home_page.dart';
 
 void main() {
@@ -16,6 +17,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => DetailProvider()),
+        ChangeNotifierProvider(create: (_) => SearchProvider()),
       ],
       child: const MyApp(),
     ),

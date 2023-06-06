@@ -1,4 +1,5 @@
 import 'package:moviedb/model/detail/detail_model.dart';
+import 'package:moviedb/model/search/search_model.dart';
 
 import '../model/movie_model.dart';
 import '../utils/constant.dart';
@@ -26,6 +27,18 @@ class ApiNetwork {
     var response = await BaseClient().get(apiUrl);
     if (response != null) {
       return movieDetailFromJson(response);
+    } else {
+      return null;
+    }
+  }
+
+  // search movie
+  Future<MovieSearchResp?> searchMovie(String query) async {
+    var apiUrl = '/search/movie?query=$query&api_key=$apiKey';
+
+    var response = await BaseClient().get(apiUrl);
+    if (response != null) {
+      return movieSearchRespFromJson(response);
     } else {
       return null;
     }
