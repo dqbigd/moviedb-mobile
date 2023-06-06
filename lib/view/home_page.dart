@@ -56,109 +56,165 @@ class HomePage extends StatelessWidget {
         elevation: 0,
         backgroundColor: primaryColor,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Container(
-            height: 20,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                )),
-          ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await homeProvider.getNowPlayingData();
-                },
-                child: Consumer<HomeProvider>(
-                  builder: (context, provider, _) {
-                    if (provider.isLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return GridView.builder(
-                        padding: const EdgeInsets.only(top: 10),
-                        itemCount: provider.listNowPlaying.length,
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 10,
-                          childAspectRatio: 0.65,
-                        ),
-                        physics: const ScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          var linkImage = Constant.imageUrl;
-                          return GestureDetector(
-                            onTap: () {
-                              detailProvider
-                                  .onInit(provider.listNowPlaying[index].id!);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetailPage(
-                                    imagePath:
-                                        '$linkImage${provider.listNowPlaying[index].backdropPath}',
+          Column(
+            children: [
+              Container(
+                height: 20,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
+                    )),
+              ),
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await homeProvider.getNowPlayingData();
+                    },
+                    child: Consumer<HomeProvider>(
+                      builder: (context, provider, _) {
+                        if (provider.isLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (provider.listNowPlaying.isEmpty) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("No data available"),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    await homeProvider.getNowPlayingData();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: primaryColor,
+                                  ),
+                                  child: const Text(
+                                    "Reload",
+                                  )),
+                            ],
+                          );
+                        } else {
+                          return GridView.builder(
+                            padding: const EdgeInsets.only(top: 10),
+                            itemCount: provider.listNowPlaying.length,
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: 0.65,
+                            ),
+                            physics: const ScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              var linkImage = Constant.imageUrl;
+                              return GestureDetector(
+                                onTap: () {
+                                  detailProvider.onInit(
+                                      provider.listNowPlaying[index].id!);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailPage(
+                                        imagePath:
+                                            '$linkImage${provider.listNowPlaying[index].backdropPath}',
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.all(3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: const Offset(1, 1),
+                                        blurRadius: 8,
+                                        color: Colors.black.withOpacity(.1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.32,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          '$linkImage${provider.listNowPlaying[index].posterPath}',
+                                          fit: BoxFit.cover,
+                                          loadingBuilder: (BuildContext context,
+                                              Widget child,
+                                              ImageChunkEvent?
+                                                  loadingProgress) {
+                                            if (loadingProgress == null) {
+                                              return child;
+                                            }
+                                            return ShimmerImage(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.32);
+                                          },
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               );
                             },
-                            child: Container(
-                              margin: const EdgeInsets.all(3),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    offset: const Offset(1, 1),
-                                    blurRadius: 8,
-                                    color: Colors.black.withOpacity(.1),
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.32,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      '$linkImage${provider.listNowPlaying[index].posterPath}',
-                                      fit: BoxFit.cover,
-                                      loadingBuilder: (BuildContext context,
-                                          Widget child,
-                                          ImageChunkEvent? loadingProgress) {
-                                        if (loadingProgress == null) {
-                                          return child;
-                                        }
-                                        return ShimmerImage(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.32);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
                           );
-                        },
-                      );
-                    }
-                  },
+                        }
+                      },
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
+          Consumer<HomeProvider>(builder: (context, provider, _) {
+            if (!provider.connectionStatus) {
+              return Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.red,
+                ),
+                padding: const EdgeInsets.all(12),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 25),
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.warning_rounded,
+                      size: 15.0,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      'No internet connection',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Container();
+            }
+          }),
         ],
       ),
     );
