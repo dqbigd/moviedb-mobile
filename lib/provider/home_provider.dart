@@ -15,6 +15,9 @@ class HomeProvider extends ChangeNotifier {
   var listNowPlaying = <Movie>[];
   var respNowPlaying = MovieResponse();
 
+  ScrollController scrollController = ScrollController();
+  int _currentPage = 0;
+
   var connectionStatus = true;
 
   ConnectivityResult _connectionStatus = ConnectivityResult.none;
@@ -26,6 +29,8 @@ class HomeProvider extends ChangeNotifier {
 
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+
+    scrollController.addListener(_scrollListener);
   }
 
   void onInit() {
@@ -42,12 +47,35 @@ class HomeProvider extends ChangeNotifier {
 
       if (response != null) {
         respNowPlaying = response;
+        _currentPage = respNowPlaying.page!;
         listNowPlaying = respNowPlaying.results!;
       }
     } finally {
       isLoading = false;
     }
     notifyListeners();
+  }
+
+  loadNowPlayingData() async {
+    _currentPage++;
+    try {
+      MovieResponse? response = await apiNetwork.nowPlaying(page: _currentPage);
+
+      if (response != null) {
+        respNowPlaying = response;
+        listNowPlaying.addAll(respNowPlaying.results!);
+      }
+    } finally {
+      isLoading = false;
+    }
+    notifyListeners();
+  }
+
+  void _scrollListener() {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      loadNowPlayingData();
+    }
   }
 
   Future<void> initConnectivity() async {
@@ -81,6 +109,7 @@ class HomeProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    scrollController.dispose();
     _connectivitySubscription.cancel();
     super.dispose();
   }

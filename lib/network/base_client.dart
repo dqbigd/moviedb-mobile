@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../utils/constant.dart';
+import 'app_exception.dart';
 
 class BaseClient {
   static const int TIME_OUT_DURATION = 30;
@@ -18,130 +19,15 @@ class BaseClient {
       var response = await http
           .get(uri, headers: null)
           .timeout(const Duration(seconds: TIME_OUT_DURATION));
-      if (response.statusCode != 200) {
-        // debugPrint('${response.statusCode} | ' + api);
-      }
+      if (response.statusCode != 200) {}
       return _processResponse(response);
     } on SocketException {
-      // DialogHelper.showErrorToast(description: 'No connection');
-
-      // throw FetchDataException('No Internet connection', uri.toString());
+      throw FetchDataException('No Internet connection', uri.toString());
     } on TimeoutException {
-      // if (!Get.isDialogOpen!) {
-      //   DialogHelper.showErrorDialog(description: 'API not responded in time');
-      // }
-      // throw ApiNotRespondingException('API not responded in time', uri.toString());
+      throw ApiNotRespondingException(
+          'API not responded in time', uri.toString());
     }
   }
-
-  //POST
-  // Future<dynamic> post(String api, dynamic body,
-  //     {bool usingToken = true}) async {
-  //   var uri = Uri.parse(baseUrl + api);
-  //   var token = '';
-  //
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //
-  //   if (usingToken) {
-  //     token = prefs.getString(sharedPreferencesManager.KEY_TOKEN)!;
-  //   }
-  //
-  //   try {
-  //     var response = await http
-  //         .post(uri,
-  //             headers: usingToken
-  //                 ? {
-  //                     'Content-Type': 'application/json',
-  //                     'Accept': 'application/json',
-  //                     'Authorization': 'Bearer $token',
-  //                   }
-  //                 : null,
-  //             body: body)
-  //         .timeout(const Duration(seconds: TIME_OUT_DURATION));
-  //     if (response.statusCode != 200 || response.statusCode != 201) {
-  //       debugPrint('${response.statusCode} | ' + api);
-  //     }
-  //     return _processResponse(response);
-  //   } on SocketException {
-  //     if (!Get.isDialogOpen!) {
-  //       DialogHelper.showErrorDialog(description: 'No connection');
-  //     }
-  //   } on TimeoutException {
-  //     if (!Get.isDialogOpen!) {
-  //       DialogHelper.showErrorDialog(description: 'API not responded in time');
-  //     }
-  //   }
-  // }
-
-  //PUT
-  // Future<dynamic> put(String api, dynamic payload,
-  //     {bool usingToken = true}) async {
-  //   var uri = Uri.parse(baseUrl + api);
-  //   var token = '';
-  //
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   token = prefs.getString(sharedPreferencesManager.KEY_TOKEN)!;
-  //
-  //   try {
-  //     var response = await http
-  //         .put(uri,
-  //             headers: usingToken
-  //                 ? {
-  //                     'Content-Type': 'application/json',
-  //                     'Accept': 'application/json',
-  //                     'Authorization': 'Bearer $token',
-  //                   }
-  //                 : null,
-  //             body: payload)
-  //         .timeout(const Duration(seconds: TIME_OUT_DURATION));
-  //     if (response.statusCode != 200) {
-  //       debugPrint('${response.statusCode} | ' + api);
-  //     }
-  //     return _processResponse(response);
-  //   } on SocketException {
-  //     if (!Get.isDialogOpen!) {
-  //       DialogHelper.showErrorDialog(description: 'No connection');
-  //     }
-  //   } on TimeoutException {
-  //     if (!Get.isDialogOpen!) {
-  //       DialogHelper.showErrorDialog(description: 'API not responded in time');
-  //     }
-  //   }
-  // }
-
-  //DELETE
-  // Future<dynamic> delete(String api, {bool usingToken = true}) async {
-  //   var uri = Uri.parse(baseUrl + api);
-  //   var token = '';
-  //
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   token = prefs.getString(sharedPreferencesManager.KEY_TOKEN)!;
-  //
-  //   try {
-  //     var response = await http
-  //         .delete(uri,
-  //             headers: usingToken
-  //                 ? {
-  //                     'Content-Type': 'application/json',
-  //                     'Accept': 'application/json',
-  //                     'Authorization': 'Bearer $token',
-  //                   }
-  //                 : null)
-  //         .timeout(Duration(seconds: TIME_OUT_DURATION));
-  //     if (response.statusCode != 200) {
-  //       debugPrint('${response.statusCode} | ' + api);
-  //     }
-  //     return _processResponse(response);
-  //   } on SocketException {
-  //     if (!Get.isDialogOpen!) {
-  //       DialogHelper.showErrorDialog(description: 'No connection');
-  //     }
-  //   } on TimeoutException {
-  //     if (!Get.isDialogOpen!) {
-  //       DialogHelper.showErrorDialog(description: 'API not responded in time');
-  //     }
-  //   }
-  // }
 
   dynamic _processResponse(http.Response response) {
     switch (response.statusCode) {

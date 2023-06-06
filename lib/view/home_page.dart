@@ -102,8 +102,9 @@ class HomePage extends StatelessWidget {
                           );
                         } else {
                           return GridView.builder(
+                            controller: provider.scrollController,
                             padding: const EdgeInsets.only(top: 10),
-                            itemCount: provider.listNowPlaying.length,
+                            itemCount: provider.listNowPlaying.length + 2,
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
                             gridDelegate:
@@ -115,63 +116,71 @@ class HomePage extends StatelessWidget {
                             ),
                             physics: const ScrollPhysics(),
                             itemBuilder: (context, index) {
-                              var linkImage = Constant.imageUrl;
-                              return GestureDetector(
-                                onTap: () {
-                                  detailProvider.onInit(
-                                      provider.listNowPlaying[index].id!);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DetailPage(
-                                        imagePath:
-                                            '$linkImage${provider.listNowPlaying[index].backdropPath}',
+                              if (index < provider.listNowPlaying.length) {
+                                var linkImage = Constant.imageUrl;
+                                return GestureDetector(
+                                  onTap: () {
+                                    detailProvider.onInit(
+                                        provider.listNowPlaying[index].id!);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailPage(
+                                          imagePath:
+                                              '$linkImage${provider.listNowPlaying[index].backdropPath}',
+                                        ),
                                       ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.all(3),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          offset: const Offset(1, 1),
+                                          blurRadius: 8,
+                                          color: Colors.black.withOpacity(.1),
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.all(3),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        offset: const Offset(1, 1),
-                                        blurRadius: 8,
-                                        color: Colors.black.withOpacity(.1),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.32,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          '$linkImage${provider.listNowPlaying[index].posterPath}',
-                                          fit: BoxFit.cover,
-                                          loadingBuilder: (BuildContext context,
-                                              Widget child,
-                                              ImageChunkEvent?
-                                                  loadingProgress) {
-                                            if (loadingProgress == null) {
-                                              return child;
-                                            }
-                                            return ShimmerImage(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.32);
-                                          },
+                                    child: Center(
+                                      child: SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.32,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Image.network(
+                                            '$linkImage${provider.listNowPlaying[index].posterPath}',
+                                            fit: BoxFit.cover,
+                                            loadingBuilder:
+                                                (BuildContext context,
+                                                    Widget child,
+                                                    ImageChunkEvent?
+                                                        loadingProgress) {
+                                              if (loadingProgress == null) {
+                                                return child;
+                                              }
+                                              return ShimmerImage(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.32);
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
+                                );
+                              } else {
+                                return ShimmerImage(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.32);
+                              }
                             },
                           );
                         }
