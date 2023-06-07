@@ -77,20 +77,24 @@ class SearchPage extends StatelessWidget {
                           height: MediaQuery.of(context).size.height * 0.32,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              '$linkImage${provider.listSearch[index].posterPath}',
-                              fit: BoxFit.cover,
-                              loadingBuilder: (BuildContext context,
-                                  Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                }
-                                return ShimmerImage(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.32);
-                              },
-                            ),
+                            child: provider.listSearch[index].posterPath == null
+                                ? Image.asset('assets/images/no-image.jpg')
+                                : Image.network(
+                                    '$linkImage${provider.listSearch[index].posterPath}',
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      }
+                                      return ShimmerImage(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.32);
+                                    },
+                                  ),
                           ),
                         ),
                       ),
